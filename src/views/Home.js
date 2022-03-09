@@ -37,8 +37,8 @@ const Home = () => {
     }
   }
   
+  getLocal()
   useEffect(() => {
-    getLocal()
   }, [])
 
   
