@@ -1,4 +1,4 @@
-import { Mail, Home, FileText, Shield, Pocket, ChevronsRight, User, Users, UserPlus} from 'react-feather'
+import { Mail, Home, FileText, Shield, Pocket, ChevronsRight, User, Users, UserPlus, Briefcase} from 'react-feather'
 
 
 // const datas = JSON.parse(authStorage).data.message[0].admin_permission
@@ -62,7 +62,13 @@ export default [
         navLink: '/user'
       }
     ]
-  }
+  },
+  {
+    id: 'datalog',
+    title: 'Datalog',
+    icon: <Briefcase size={20} />,
+    navLink: '/datalog'
+  }   
 ]
 // console.log(!authStorage)
 // if (!authStorage){

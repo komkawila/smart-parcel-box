@@ -4,6 +4,7 @@ import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
+// import source from 'soss-logo.png'
 // import axios from 'axios'
 import { useState } from 'react'
 import axios from 'axios'
@@ -18,8 +19,10 @@ const LoginCover = () => {
   // const [data, setData] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
+  const illustration = skin === 'dark' ? 'soss-logo.png' : 'soss-logo.png',
+  // const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
     source = require(`@src/assets/images/pages/${illustration}`).default
+  // const source = require(`soss-logo.png`)
   const loginFunc = async () => {
     await axios.post(`${url}/api/login/admin`, {
         admin_username : username,
@@ -35,13 +38,6 @@ const LoginCover = () => {
           timer: 1500
         })
       } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Login success',
-          showConfirmButton: false,
-          timer: 500
-        }).then(() => {
           localStorage.setItem('saved', new Date().getTime())
           localStorage.setItem("auth", JSON.stringify(res.data))
            
@@ -49,7 +45,7 @@ const LoginCover = () => {
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 1000,
+            timer: 500,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -60,13 +56,9 @@ const LoginCover = () => {
           Toast.fire({
             icon: 'success',
             title: 'Signed in successfully'
-          })
-
-          setTimeout(() => {
+          }).then(() => {
             history.push('/home')
-          }, 1000)
-          
-        })
+          })
       }
     })
     // console.log(`username = ${username}`)
