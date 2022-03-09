@@ -37,8 +37,9 @@ const Home = () => {
     }
   }
   
-  getLocal()
   useEffect(() => {
+    console.log('useEFFECT $$')
+  getLocal()
   }, [])
 
   

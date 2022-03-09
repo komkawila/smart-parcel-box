@@ -5,8 +5,10 @@ import Layout from '@layouts/VerticalLayout'
 // ** Menu Items Array
 import navigation from '@src/navigation/vertical'
 import navigation2 from '@src/navigation/vertical/indexuser'
+import { useHistory } from "react-router-dom"
 
 const VerticalLayout = props => {
+  const history = useHistory()
   // const [menuData, setMenuData] = useState([])
 
   // ** For ServerSide navigation
@@ -26,7 +28,12 @@ const VerticalLayout = props => {
       // return <Link to="/login"/>
       localStorage.clear()
     } else if (authStorage) {
-      console.log(JSON.parse(authStorage).data.message[0].admin_permission)
+      try {
+        console.log(JSON.parse(authStorage).data.message[0].admin_permission)
+      } catch {
+        
+      }
+      
 
       // (JSON.parse(authStorage).data.message[0].admin_permission === 0) ? 
       // return <Link to="/home"/>
@@ -36,7 +43,7 @@ const VerticalLayout = props => {
   // getLocal()
 
   return (
-    <Layout menuData={JSON.parse(authStorage).data.message[0].admin_permission === 0 ? navigation : navigation2} {...props}>
+    <Layout menuData={(!authStorage) ? null : JSON.parse(authStorage).data.message[0].admin_permission === 0 ? navigation : navigation2} {...props}>
       {props.children}
     </Layout>
   )
