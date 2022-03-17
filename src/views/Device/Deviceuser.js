@@ -37,7 +37,9 @@ import {
   const Device = () => {
     const history = useHistory()
     const [groupid, setGroupid] = useState(0)
+    const [admindata, setAdmindata] = useState([])
     console.log(history)
+    console.log(admindata)
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
@@ -50,6 +52,9 @@ import {
       } else if (authStorage) {
         setGroupid(JSON.parse(authStorage).data.message[0].group_id)
         console.log(JSON.parse(authStorage).data.message[0].group_id)
+        // console.log(JSON.parse(authStorage).data.message[0].admin_name)
+        setAdmindata(JSON.parse(authStorage).data.message[0])
+        
         // console.log(groupid)
         // history.push('/home')
       }
@@ -166,6 +171,10 @@ import {
             buttonsStyling: false
           }).then(function (result) {
             if (result.value) {
+              axios.post(`${url}/api/datalog/admin`, {
+                admin_id : admindata.admin_id,
+                adminlog_detail : `[DELETE] ${id.device_name}`
+              })
               axios.delete(`${url}/api/device/device/device_id/${id.device_id}`).then((res) => {
                 if (res.data.data.err) {
                   Swal.fire({
@@ -213,6 +222,11 @@ import {
                 buttonsStyling: false
               }).then(function (result) {
                 if (result.value) {
+                  
+                  axios.post(`${url}/api/datalog/admin`, {
+                    admin_id : admindata.admin_id,
+                    adminlog_detail : `[OPEN] ${data.device_name}`
+                  })
                   axios.put(`${url}/api/device/device/device_id/${data.device_id}`, {
                     device_name: data.device_name,
                     group_id: data.group_id,
@@ -256,7 +270,7 @@ import {
         
       }
       const updateFunc = () => {
-        // console.log(modaldata)
+        console.log("updateFunc ====")
           Swal.fire({
               title: 'Are you sure?',
               text: `Confirm Update '${modaldata.group_name}'`,
@@ -270,6 +284,11 @@ import {
               buttonsStyling: false
             }).then(function (result) {
               if (result.value) {
+                console.log("axios.post(`${url}/api/datalog/admin` ====")
+                axios.post(`${url}/api/datalog/admin`, {
+                  admin_id : admindata.admin_id,
+                  adminlog_detail : `[EDIT] ${modaldata.device_name}`
+                })
                 axios.put(`${url}/api/device/device/device_id/${modaldata.device_id}`, {
                     device_name: modaldata.device_name,
                     group_id: modaldata.group_id,
@@ -285,9 +304,9 @@ import {
                       icon: 'error',
                       customClass: {
                       confirmButton: 'btn btn-danger'
-                    }
-                  })
-                  return 0
+                      }
+                    })
+                    return 0
                   } else {
                     Swal.fire({
                       icon: 'success',

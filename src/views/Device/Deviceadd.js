@@ -16,13 +16,17 @@ import {
   
   import Swal from "sweetalert2"
   import Cleave from "cleave.js/react"
-  import { useState } from "react"
+  import { useState, useEffect } from "react"
   import axios from 'axios'
   import { useHistory} from "react-router-dom"
+  import apiConfig from '../../configs/apiConfig'
 
   const Deviceadd = () => {
     const history = useHistory()
+    const [admindata, setAdmindata] = useState([])
     console.log(history)
+    console.log(admindata)
+    const url = apiConfig.mainurl.url
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
@@ -33,10 +37,18 @@ import {
         history.push('/login')
         localStorage.clear()
       } else if (authStorage) {
+        // setAdmindata(JSON.parse(authStorage).data.message[0])
+        // setAdmindata()
+        // console.log('JSON.parse(authStorage)')
+        // console.log(JSON.parse(authStorage).data.message[0])
+        setAdmindata(JSON.parse(authStorage).data.message[0])
         // history.push('/home')
       }
     }
-    getLocal()
+    useEffect(() => {
+      getLocal()
+    }, [])
+    
     const params = new URLSearchParams(history.location.search)
     if (!params.get('groupid')) {
         history.push('/')
@@ -73,7 +85,12 @@ import {
               buttonsStyling: false
             }).then(function (result) {
               if (result.value) {
-                  axios.post(`https://api.phanuwat.info/api/device/device/adddevice/${groupid}`, {
+                
+              axios.post(`${url}/api/datalog/admin`, {
+                admin_id : admindata.admin_id,
+                adminlog_detail : `[ADD] ${device_name}`
+              })
+                  axios.post(`${url}/api/device/device/adddevice/${groupid}`, {
                     device_name
                   }).then(res => {
                       console.log(res.data.data)
