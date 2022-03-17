@@ -21,6 +21,7 @@ import {
     DropdownItem,
     Badge
   } from "reactstrap"
+  import FileUploaderSingle from './FileUploaderSingle'
   import { Controller } from 'react-hook-form'
   
   import Avatar from '@components/avatar'
@@ -321,6 +322,13 @@ import {
                   Ads
                 </Label>
                 <Input type='text' placeholder='Ads' defaultValue={modaldata.group_ads} value={modaldata.group_ads} onChange={(e) => setModaldata({...modaldata, group_ads:e.target.value})} disabled={!edit}/>
+              </Col>
+              <Col md={12} xs={12}>
+                <Label className='form-label' for='Ads'>
+                  Ads Video
+                </Label>
+                <FileUploaderSingle />
+                {/* <Input type='text' placeholder='Ads' defaultValue={modaldata.group_ads} value={modaldata.group_ads} onChange={(e) => setModaldata({...modaldata, group_ads:e.target.value})} disabled={!edit}/> */}
               </Col>
               
               <Col xs={12} className='text-center mt-2 pt-50'>
