@@ -38,8 +38,8 @@ import {
     const history = useHistory()
     const [groupid, setGroupid] = useState(0)
     const [admindata, setAdmindata] = useState([])
-    console.log(history)
     console.log(admindata)
+    console.log(history)
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
