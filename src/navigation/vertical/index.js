@@ -68,7 +68,7 @@ export default [
     title: 'Datalog',
     icon: <Briefcase size={20} />,
     navLink: '/datalog'
-  }   
+  }
 ]
 // console.log(!authStorage)
 // if (!authStorage){

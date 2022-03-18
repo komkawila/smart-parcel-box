@@ -28,7 +28,7 @@ export default [
     id: 'datalog',
     title: 'Datalog',
     icon: <Briefcase size={20} />,
-    navLink: '/datalog'
+    navLink: '/dataloguser'
   }   
 ]
 
