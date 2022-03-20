@@ -69,6 +69,13 @@ export default [
     icon: <Briefcase size={20} />,
     navLink: '/datalog'
   }
+  // ,
+  // {
+  //   id: 'profile',
+  //   title: 'Profile',
+  //   icon: <Briefcase size={20} />,
+  //   navLink: '/profile'
+  // }
 ]
 // console.log(!authStorage)
 // if (!authStorage){

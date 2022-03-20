@@ -59,7 +59,11 @@ const Routes = [
   {
     path: '/dataloguser',
     component: lazy(() => import('../../views/Datalog/Dataloguser'))
-  },  
+  },
+  {
+    path: '/profile',
+    component: lazy(() => import('../../views/Profiles/AccountTabContent'))
+  }, 
   {
     path: '/error',
     component: lazy(() => import('../../views/Error')),

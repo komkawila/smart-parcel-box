@@ -9,7 +9,7 @@ import Avatar from '@components/avatar'
 import { isUserLoggedIn } from '@utils'
 
 // ** Third Party Components
-import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircle, Power } from 'react-feather'
+import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircle, Power, Pass, Key } from 'react-feather'
 
 // ** Reactstrap Imports
 import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
@@ -49,9 +49,9 @@ const UserDropdown = () => {
       </DropdownToggle>
       <DropdownMenu end>
         {/* <DropdownItem tag={Link} href='/pages/profile' onClick={e => e.preventDefault()}> */}
-        <DropdownItem tag={Link} to='/pages/profile'>
-          <User size={14} className='me-75' />
-          <span className='align-middle'>Profile</span>
+        <DropdownItem tag={Link} to='/profile'>
+          <Key size={14} className='me-75' />
+          <span className='align-middle'>Change Password</span>
         </DropdownItem>
         
         {/* <DropdownItem tag='a' href='/apps/todo' onClick={e => e.preventDefault()}>
