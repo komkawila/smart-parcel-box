@@ -26,6 +26,8 @@ import {
   const Adminadd = () => {
     const history = useHistory()
     console.log(history)
+    const [admindata, setAdmindata] = useState([])
+    // console.log(admindata)
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
@@ -36,10 +38,14 @@ import {
         history.push('/login')
         localStorage.clear()
       } else if (authStorage) {
+        setAdmindata(JSON.parse(authStorage).data.message[0])
         // history.push('/home')
       }
     }
-    getLocal()
+    useEffect(() => {
+      getLocal()
+    }, [])
+    
     const [usernametext, setUsernametext] = useState("")
     const [passwordtext, setPasswordtext] = useState("")
     const [nametext, setNametext] = useState("")
@@ -111,6 +117,11 @@ import {
                           
                           return 0
                       } else {
+                        
+                          axios.post(`${url}/api/datalog/admin`, {
+                            admin_id : admindata.admin_id,
+                            adminlog_detail : `[Add User] ${nametext}`
+                          })
                           Swal.fire({
                               icon: 'success',
                               title: 'Add Information!',

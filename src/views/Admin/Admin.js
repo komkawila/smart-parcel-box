@@ -37,6 +37,8 @@ import {
   const Admin = () => {
     const history = useHistory()
     console.log(history)
+    const [admindata, setAdmindata] = useState([])
+    // console.log(admindata)
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
@@ -47,10 +49,14 @@ import {
         history.push('/login')
         localStorage.clear()
       } else if (authStorage) {
+        setAdmindata(JSON.parse(authStorage).data.message[0])
         // history.push('/home')
       }
     }
-    getLocal()
+    useEffect(() => {
+      getLocal()
+    }, [])
+    
     const url = apiConfig.mainurl.url
     const [group, setGroup] = useState([])
     const [index, setIndex] = useState(0)
@@ -165,6 +171,12 @@ import {
             buttonsStyling: false
           }).then(function (result) {
             if (result.value) {
+              
+              console.log("if (result.value) {")
+              axios.post(`${url}/api/datalog/admin`, {
+                admin_id : admindata.admin_id,
+                adminlog_detail : `[DELETE] ${id.admin_username}`
+              })
               axios.delete(`${url}/api/admin/${id.admin_id}`).then((res) => {
                 if (res.data.data.err) {
                   Swal.fire({
@@ -212,6 +224,10 @@ import {
               buttonsStyling: false
             }).then(function (result) {
               if (result.value) {
+                axios.post(`${url}/api/datalog/admin`, {
+                  admin_id : admindata.admin_id,
+                  adminlog_detail : `[EDIT] ${modaldata.admin_name}`
+                })
                 axios.put(`${url}/api/admins/${modaldata.admin_id}`, {
                     admin_username: modaldata.admin_username,
                     admin_email: modaldata.admin_email,
@@ -266,6 +282,10 @@ import {
             buttonsStyling: false
           }).then(function (result) {
             if (result.value) {
+              axios.post(`${url}/api/datalog/admin`, {
+                admin_id : admindata.admin_id,
+                adminlog_detail : `[Reset Password] ${data.admin_name}`
+              })
               axios.patch(`${url}/api/admin/${data.admin_id}`, {
                 newpassword : "P@ssw0rd"
               }).then((res) => {
