@@ -23,6 +23,11 @@ import {
   } from "reactstrap"
   import { Controller } from 'react-hook-form'
   
+  import ReactExport from "react-export-excel"
+
+  const ExcelFile = ReactExport.ExcelFile
+  const ExcelSheet = ReactExport.ExcelFile.ExcelSheet
+  const ExcelColumn = ReactExport.ExcelFile.ExcelColumn
   import Avatar from '@components/avatar'
   import Select from 'react-select'
   import { MoreVertical, Edit, User, Check, X, FileText, Archive, Trash, ChevronDown, Delete, TrendingUp, Box, DollarSign } from 'react-feather'
@@ -33,7 +38,7 @@ import {
   import DataTable from 'react-data-table-component'
   import Cleave from 'cleave.js/react'
   import apiConfig from '../../configs/apiConfig'
-
+  
   const Device = () => {
     const history = useHistory()
     const [groupid, setGroupid] = useState(0)
@@ -229,7 +234,14 @@ import {
         </Card>
         <Button color="warning" onClick={() => fetchApi()}>Refresh</Button>
         <span className='align-middle ms-1'/>
-        
+        <ExcelFile element={<Button color="primary">Export To Excel</Button>}>
+                <ExcelSheet data={data} name="Employees">
+                    <ExcelColumn label="admin_id" value="admin_id"/>
+                    <ExcelColumn label="adminlog_detail" value="adminlog_detail"/>
+                    <ExcelColumn label="adminlog_time" value="adminlog_time"/>
+                </ExcelSheet>
+            </ExcelFile>
+        <span className='align-middle ms-1'/>
         <br/>
         <br/>
         <DataTable

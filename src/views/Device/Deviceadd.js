@@ -24,8 +24,8 @@ import {
   const Deviceadd = () => {
     const history = useHistory()
     const [admindata, setAdmindata] = useState([])
-    console.log(history)
     console.log(admindata)
+    console.log(history)
     const url = apiConfig.mainurl.url
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
@@ -85,11 +85,10 @@ import {
               buttonsStyling: false
             }).then(function (result) {
               if (result.value) {
-                
-              axios.post(`${url}/api/datalog/admin`, {
-                admin_id : admindata.admin_id,
-                adminlog_detail : `[ADD] ${device_name}`
-              })
+                  axios.post(`${url}/api/datalog/admin`, {
+                    admin_id : admindata.admin_id,
+                    adminlog_detail : `[Add Device] ${device_name}`
+                  })
                   axios.post(`${url}/api/device/device/adddevice/${groupid}`, {
                     device_name
                   }).then(res => {

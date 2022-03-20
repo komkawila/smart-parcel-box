@@ -37,6 +37,8 @@ import {
   const Device = () => {
     const history = useHistory()
     console.log(history)
+    const [admindata, setAdmindata] = useState([])
+    console.log(admindata)
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
@@ -47,10 +49,13 @@ import {
         history.push('/login')
         localStorage.clear()
       } else if (authStorage) {
+        setAdmindata(JSON.parse(authStorage).data.message[0])
         // history.push('/home')
       }
     }
-    getLocal()
+    useEffect(() => {
+      getLocal()
+    }, [])
     const params = new URLSearchParams(history.location.search)
     if (!params.get('groupid')) {
         history.push('/')
@@ -145,6 +150,10 @@ import {
             buttonsStyling: false
           }).then(function (result) {
             if (result.value) {
+              axios.post(`${url}/api/datalog/admin`, {
+                admin_id : admindata.admin_id,
+                adminlog_detail : `[Delete Device] ${id.device_name}`
+              })
               axios.delete(`${url}/api/device/device/device_id/${id.device_id}`).then((res) => {
                 if (res.data.data.err) {
                   Swal.fire({
@@ -249,6 +258,10 @@ import {
               buttonsStyling: false
             }).then(function (result) {
               if (result.value) {
+                axios.post(`${url}/api/datalog/admin`, {
+                  admin_id : admindata.admin_id,
+                  adminlog_detail : `[Edit Device] ${modaldata.device_name}`
+                })
                 axios.put(`${url}/api/device/device/device_id/${modaldata.device_id}`, {
                     device_name: modaldata.device_name,
                     group_id: modaldata.group_id,

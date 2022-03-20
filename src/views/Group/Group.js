@@ -38,6 +38,9 @@ import {
   const Group = () => {
     const history = useHistory()
     console.log(history)
+
+    const [admindata, setAdmindata] = useState([])
+    // console.log(admindata)
     const getLocal = () => {
       const authStorage = localStorage.getItem("auth")
       const savedStorage = localStorage.getItem("saved")
@@ -48,10 +51,15 @@ import {
         history.push('/login')
         localStorage.clear()
       } else if (authStorage) {
+        setAdmindata(JSON.parse(authStorage).data.message[0])
         // history.push('/home')
       }
     }
-    getLocal()
+
+    useEffect(() => {
+      getLocal()
+    }, [])
+
     const url = apiConfig.mainurl.url
     const [data, setData] = useState([])
     const [modaldata, setModaldata] = useState([])
@@ -101,6 +109,10 @@ import {
             buttonsStyling: false
           }).then(function (result) {
             if (result.value) {
+              axios.post(`${url}/api/datalog/admin`, {
+                admin_id : admindata.admin_id,
+                adminlog_detail : `[DELETE] ${id.group_name}`
+              })
               axios.delete(`${url}/api/group/${id.group_id}`).then((res) => {
                 if (res.data.data.err) {
                   Swal.fire({
@@ -146,6 +158,10 @@ import {
               buttonsStyling: false
             }).then(function (result) {
               if (result.value) {
+                axios.post(`${url}/api/datalog/admin`, {
+                  admin_id : admindata.admin_id,
+                  adminlog_detail : `[EDIT] ${modaldata.group_name}`
+                })
                 axios.put(`${url}/api/group/${modaldata.group_id}`, {
                   group_name: modaldata.group_name,
                   group_location: modaldata.group_location,

@@ -16,12 +16,16 @@ import {
 
 import Swal from "sweetalert2"
 import Cleave from "cleave.js/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from 'axios'
 import { useHistory } from "react-router-dom"
+import apiConfig from '../../configs/apiConfig'
+// import apiConfig from '../../configs/apiConfig'
 const Groupadd = () => {
   const history = useHistory()
   console.log(history)
+  const [admindata, setAdmindata] = useState([])
+  // console.log(admindata)
   const getLocal = () => {
     const authStorage = localStorage.getItem("auth")
     const savedStorage = localStorage.getItem("saved")
@@ -32,10 +36,14 @@ const Groupadd = () => {
       history.push('/login')
       localStorage.clear()
     } else if (authStorage) {
+      setAdmindata(JSON.parse(authStorage).data.message[0])
       // history.push('/home')
     }
   }
-  getLocal()
+
+  useEffect(() => {
+    getLocal()
+  }, [])
   // const nametext = useRef("")
   // const locationtext = useRef("")
   // const detailstext = useRef("")
@@ -43,6 +51,7 @@ const Groupadd = () => {
   const [locationtext, setlocationtext] = useState("")
   const [detailstext, setdetailstext] = useState("")
 
+  const url = apiConfig.mainurl.url
   const onclickSubmit = () => {
       if (!nametext || !locationtext || !detailstext) {
         // if (!nametext.current.state.value || !locationtext.current.state.value || !detailstext.current.state.value) {
@@ -67,7 +76,11 @@ const Groupadd = () => {
             buttonsStyling: false
           }).then(function (result) {
             if (result.value) {
-                axios.post('https://api.phanuwat.info/api/user/group', {
+                axios.post(`${url}/api/datalog/admin`, {
+                  admin_id : admindata.admin_id,
+                  adminlog_detail : `[Add Grooup] ${nametext}`
+                })
+                axios.post(`${url}/api/user/group`, {
                     // group_name : nametext.current.state.value,
                     // group_location : locationtext.current.state.value,
                     // group_detail : detailstext.current.state.value
