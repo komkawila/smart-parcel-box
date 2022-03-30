@@ -404,6 +404,7 @@ import {
     
     return (
       <div>
+      <span className='align-middle ms-1'/>
       <Card>
         <CardHeader>
           <CardTitle>{group.group_name}</CardTitle>

@@ -19,16 +19,18 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    Badge
+    Badge,
+    ListGroup,
+    ListGroupItem
   } from "reactstrap"
   import FileUploaderSingle from './FileUploaderSingle'
   import { Controller } from 'react-hook-form'
-  
+  import { useDropzone } from 'react-dropzone'
   import Avatar from '@components/avatar'
   import Select from 'react-select'
-  import { MoreVertical, Edit, User, Check, X, FileText, Archive, Trash, ChevronDown, Delete, TrendingUp, Box, DollarSign } from 'react-feather'
+  import { MoreVertical, Edit, User, Check, X, DownloadCloud, FileText, Archive, Trash, ChevronDown, Delete, TrendingUp, Box, DollarSign } from 'react-feather'
   import axios from 'axios'
-  import {useEffect, useState} from 'react'
+  import {useEffect, useState, Fragment} from 'react'
   import { useHistory } from "react-router-dom"
   import Swal from "sweetalert2"
   import DataTable from 'react-data-table-component'
@@ -170,7 +172,10 @@ import {
                   group_password: modaldata.group_password,
                   group_ads: modaldata.group_ads
                 }).then((res) => {
+                  console.log("res = ")
+                  console.log(res)
                   if (res.data.data.err) {
+
                     Swal.fire({
                       title: 'Error',
                       icon: 'error',
@@ -256,8 +261,128 @@ import {
       }
     ]
     
+    
+    const [files, setFiles] = useState([])
+    const [isUploading, setisUploading] = useState(false)
+
+    const { getRootProps, getInputProps } = useDropzone({
+      multiple: false,
+      onDrop: acceptedFiles => {
+        setFiles(acceptedFiles)
+        // setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
+      }
+    })
+
+    const renderFilePreview = file => {
+      if (file.type.startsWith('image')) {
+        return <img className='rounded' alt={file.name} src={URL.createObjectURL(file)} height='28' width='28' />
+      } else {
+        return <FileText size='28' />
+      }
+    }
+
+    const handleRemoveFile = file => {
+      const uploadedFiles = files
+      const filtered = uploadedFiles.filter(i => i.name !== file.name)
+      setFiles([filtered])
+      // setFiles([...filtered])
+    }
+
+    const renderFileSize = size => {
+      if (Math.round(size / 100) / 10 > 1000) {
+        return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`
+      } else {
+        return `${(Math.round(size / 100) / 10).toFixed(1)} kb`
+      }
+    }
+    
+    const fileList = files.map((file, index) => (
+      <ListGroupItem key={`${file.name}-${index}`} className='d-flex align-items-center justify-content-between'>
+        <div className='file-details d-flex align-items-center'>
+          <div className='file-preview me-1'>{renderFilePreview(file)}</div>
+          <div>
+            <p className='file-name mb-0'>{file.name}</p>
+            <p className='file-size mb-0'>{renderFileSize(file.size)}</p>
+          </div>
+        </div>
+        <Button color='danger' outline size='sm' className='btn-icon' onClick={() => handleRemoveFile(file)}>
+          <X size={14} />
+        </Button>
+      </ListGroupItem>
+    ))
+
+    const handleRemoveAllFiles = () => {
+      setFiles([])
+    }
+
+    const uploadVideo = async () =>  {
+      setisUploading(true)
+      console.log(`uploadVideo `)
+      console.log(modaldata)
+      console.log(files)
+      const bodyFormData = new FormData()
+      bodyFormData.append('file', files[0])
+      console.log(bodyFormData)
+      console.log(`${url}/upload-video/upload-video/${modaldata.group_id}`)
+      // axios.post(`${url}/upload-video/upload-video/3/${modaldata.group_id}`)
+      await axios({
+        method: "post",
+        url: `${url}/upload-video/upload-video/${modaldata.group_id}`,
+        data: bodyFormData,
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+        .then(function (response) {
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Upload Video Status!',
+            text: 'Successfully Upload Video.',
+            timer:1000,
+            showConfirmButton : false
+          })
+          // console.log("upload video ......")
+          setisUploading(false)
+          setFiles([])
+          //handle success
+          setModaldata({...modaldata, group_ads:response.data.data.url})
+          // console.log(response.data.data.url)
+          fetchApi()
+        })
+        .catch(function (response) {
+          //handle error
+          console.log("err upload video ......")
+          console.log(response)
+        })
+    }
+
+    // const testalert = async () =>  {
+    //   let timerInterval
+    //   Swal.fire({
+    //     title: 'Auto close alert!',
+    //     // html: 'I will close in <b></b> seconds.',
+    //     // html: 'I will close in <b></b> seconds.',
+    //     timer: 10000,
+    //     timerProgressBar: false,
+    //     didOpen: () => {
+    //       Swal.showLoading()
+    //       // const b = Swal.getHtmlContainer().querySelector('b')
+    //       timerInterval = setInterval(() => {
+    //         // b.textContent = Swal.getTimerLeft()
+    //       }, 1000)
+    //     },
+    //     willClose: () => {
+    //       clearInterval(timerInterval)
+    //     }
+    //   }).then((result) => {
+    //     /* Read more about handling dismissals below */
+    //     if (result.dismiss === Swal.DismissReason.timer) {
+    //       console.log('I was closed by the timer')
+    //     }
+    //   })
+    // }
+
     return (
-      <div>        
+      <div>
         <Card className='card-statistics'>
           <CardHeader>
             <CardTitle tag='h4'>Device Statistics</CardTitle>
@@ -340,11 +465,49 @@ import {
                 <Input type='text' placeholder='Ads' defaultValue={modaldata.group_ads} value={modaldata.group_ads} onChange={(e) => setModaldata({...modaldata, group_ads:e.target.value})} disabled={!edit}/>
               </Col>
               <Col md={12} xs={12}>
+              {edit ? ( 
                 <Label className='form-label' for='Ads'>
                   Ads Video
                 </Label>
-                <FileUploaderSingle />
-                {/* <Input type='text' placeholder='Ads' defaultValue={modaldata.group_ads} value={modaldata.group_ads} onChange={(e) => setModaldata({...modaldata, group_ads:e.target.value})} disabled={!edit}/> */}
+              ) : null }
+              {edit ? ( 
+                <Card>
+                  <CardBody >
+                    <div {...getRootProps({ className: 'dropzone' })}>
+                      <input {...getInputProps()} />
+                      <div className='d-flex align-items-center justify-content-center flex-column'>
+                        <DownloadCloud size={64} />
+                        <h5>Drop Files here or click to upload</h5>
+                        <p className='text-secondary'>
+                          Drop files here or click{' '}
+                          <a href='/' onClick={e => e.preventDefault()}>
+                            browse
+                          </a>{' '}
+                          thorough your machine
+                        </p>
+                      </div>
+                    </div>
+                    {files.length ? (
+                      <Fragment>
+                        <ListGroup className='my-2'>{fileList}</ListGroup>
+                        <div className='d-flex justify-content-end'>
+                          <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
+                            Remove
+                          </Button>
+                          <Button className='me-1' color='primary' onClick={uploadVideo}>Upload Files</Button>
+                        </div>
+                      </Fragment>
+                    ) : null}
+                  
+                  {isUploading ? (
+                    <div>
+                      <div class="spinner-border text-success" role="status"></div>
+                      <span class="sr-only"> Video Uploading...</span>
+                    </div>) : null}                  
+                </CardBody>
+              </Card> 
+              ) : null }
+                
               </Col>
               
               <Col xs={12} className='text-center mt-2 pt-50'>
@@ -356,6 +519,7 @@ import {
                   Close
                 </Button>
               </Col>
+              
             </Row>
           </ModalBody>
         </Modal>

@@ -15,7 +15,8 @@ const FileUploaderSingle = () => {
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
     onDrop: acceptedFiles => {
-      setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
+      setFiles(acceptedFiles)
+      // setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
     }
   })
 
@@ -30,7 +31,8 @@ const FileUploaderSingle = () => {
   const handleRemoveFile = file => {
     const uploadedFiles = files
     const filtered = uploadedFiles.filter(i => i.name !== file.name)
-    setFiles([...filtered])
+    setFiles([filtered])
+    // setFiles([...filtered])
   }
 
   const renderFileSize = size => {
